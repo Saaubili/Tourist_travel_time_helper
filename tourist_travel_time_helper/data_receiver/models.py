@@ -8,7 +8,8 @@ class City(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     population = models.IntegerField()
-    city_type = models.CharField(max_length=25)
+    city_size = models.CharField(max_length=15,)
+    city_type = models.CharField(max_length=25, blank=True)
 
     class Meta:
         db_table = 'city'
