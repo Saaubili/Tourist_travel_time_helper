@@ -1,1 +1,0 @@
-# Tourist_travel_time_helper
