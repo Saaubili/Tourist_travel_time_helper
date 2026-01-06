@@ -11,7 +11,7 @@
 
 3. Модели данных:
     * City: хранит информацию о городах.
-        * Поля: name, country, latitude, longitude, population, city_type
+        * Поля: name, country, latitude, longitude, population, city_size, city_type
     * WeatherData: хранит исторические погодные данные для города и даты, полученные через внешний API.
         * Поля: City (ForeignKey), date, min_temperature, max_temperature, precipitation, wind_speed.
     * TourismStat: хранит показатели туристической активности по стране и месяцу.

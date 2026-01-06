@@ -8,7 +8,7 @@ class City(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     population = models.IntegerField()
-    city_size = models.CharField(max_length=15,)
+    city_size = models.CharField(max_length=15, )
     city_type = models.CharField(max_length=25, blank=True)
 
     class Meta:
@@ -27,15 +27,15 @@ class WeatherData(models.Model):
         unique_together = ("city", "date")
         db_table = 'weather_data'
 
+    def get_avg_temperature(self):
+        return (self.min_temperature + self.max_temperature) / 2
+
 
 class TourismStat(models.Model):
     country = models.CharField(max_length=100)
     date = models.DateField()
-    nights_spent = models.IntegerField()
-    occupancy_rate = models.FloatField()
-
-    def get_avg_temperature(self):
-        return (self.nights_spent + self.occupancy_rate) / 2
+    nights_spent = models.IntegerField(null=True)
+    occupancy_rate = models.FloatField(null=True)
 
     class Meta:
         unique_together = ("country", "date")
