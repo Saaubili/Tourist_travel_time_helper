@@ -16,8 +16,7 @@ class Command(BaseCommand):
             "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "ISL",
             "IRL", "ITA", "LVA", "LIE", "LTU", "LUX", "MLT", "MDA", "MCO",
             "MNE", "NLD", "MKD", "NOR", "POL", "PRT", "ROU", "RUS", "SMR",
-            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "VAT",
-            "USA"]
+            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "VAT",]
         with open(options['csv_file'], encoding='utf-8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:

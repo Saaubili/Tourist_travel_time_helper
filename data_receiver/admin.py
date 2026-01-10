@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import City, WeatherData, TourismStat
+from .models import City, TourismStat, WeatherData
 import _sqlite3
 
 # Register your models here.
@@ -9,9 +9,8 @@ class CityAdmin(admin.ModelAdmin):
 
 
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ("city", "date", "min_temperature", "max_temperature")
-    search_fields = ("city__name", "city__country")
-    list_filter = ("city",)
+    list_display = ("city", "year", "period", "min_temperature", "max_temperature")
+    search_fields = ("city", "year", "period")
 
 
 class TourismStatAdmin(admin.ModelAdmin):
