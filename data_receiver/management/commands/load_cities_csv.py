@@ -16,7 +16,7 @@ class Command(BaseCommand):
             "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "ISL",
             "IRL", "ITA", "LVA", "LIE", "LTU", "LUX", "MLT", "MDA", "MCO",
             "MNE", "NLD", "MKD", "NOR", "POL", "PRT", "ROU", "RUS", "SMR",
-            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "VAT",]
+            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "VAT", ]
         with open(options['csv_file'], encoding='utf-8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
@@ -26,7 +26,7 @@ class Command(BaseCommand):
                     csv_city_type = row['capital']
                     is_capital = csv_city_type.strip() == "primary"
 
-                    tourism_info = self.check_if_city_tourist(city_name)
+                    rus_name, tourism_info = self.check_if_city_tourist(city_name)
 
                     city_size = self.determine_city_size(population)
 
@@ -39,12 +39,13 @@ class Command(BaseCommand):
                                                       "longitude": float(row["lng"]),
                                                       "population": population,
                                                       "city_size": city_size,
-                                                      "city_type": city_type
+                                                      "city_type": city_type,
+                                                      "name_ru": rus_name,
                                                   })
         self.stdout.write(self.style.SUCCESS("Successfully loaded cities data"))
 
     def check_if_city_tourist(self, city_name):
-        params = {"q": city_name, "language": "en", "limit": 1}
+        params = {"q": city_name, "language": "ru", "limit": 1}
 
         headers = {
             "User-Agent": "Test-script",
@@ -58,12 +59,16 @@ class Command(BaseCommand):
         try:
             item_search_url = "https://www.wikidata.org/w/rest.php/wikibase/v0/search/items"
             item_search_result = requests.get(item_search_url, params=params, headers=headers)
+
             if not item_search_result.json()["results"]:
                 self.stdout.write(self.style.WARNING(f"No Wikidata entry found for city '{city_name}'"))
-                return []
+                return None, []
+
             id = item_search_result.json()["results"][0]["id"]
+            rus_name = item_search_result.json()["results"][0]["display-label"]["value"]
 
             statements_search_url = f"https://www.wikidata.org/w/rest.php/wikibase/v1/entities/items/{id}/statements"
+
             statements_search_result = requests.get(statements_search_url, headers=headers)
             statements_by_parameter = statements_search_result.json().get("P31", [])
             if statements_by_parameter:
@@ -73,13 +78,13 @@ class Command(BaseCommand):
                     statement_id = statement["value"]["content"]
                     if statement_id in tourism_dict:
                         statements_list.append(tourism_dict.get(statement["value"]["content"]))
-                return statements_list
+                return (rus_name,statements_list)
             else:
                 self.stdout.write(self.style.WARNING(f"No 'Instance of' data for city '{city_name}'"))
-                return []
+                return None, []
         except requests.exceptions.RequestException:
             self.stdout.write(self.style.ERROR("Failed to connect to Wikidata API"))
-            return []
+            return None, []
 
     @staticmethod
     def determine_city_size(population):

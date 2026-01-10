@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'data_receiver.apps.DataReceiverConfig',
+    'recommendation_system.apps.RecommendationSystemConfig',
 ]
 
 MIDDLEWARE = [

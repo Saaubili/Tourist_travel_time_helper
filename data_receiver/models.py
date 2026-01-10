@@ -10,10 +10,14 @@ class City(models.Model):
     population = models.IntegerField()
     city_size = models.CharField(max_length=15, )
     city_type = models.CharField(max_length=25, blank=True)
+    name_ru = models.CharField(max_length=100, null=True)
+    country_ru = models.CharField(max_length=100, null=True)
 
     class Meta:
         db_table = 'city'
 
+    def __str__(self):
+        return self.name_ru if self.name_ru else self.name
 
 class WeatherData(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, )
