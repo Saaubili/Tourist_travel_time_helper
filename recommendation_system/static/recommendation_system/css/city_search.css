@@ -1,0 +1,23 @@
+body {
+  background-color: lightblue;
+  font-family: verdana;
+}
+
+.city_info{
+    background-color: white;
+}
+
+#city-results{
+    background-color: rgb(202, 202, 202);
+    width: fit-content;
+}
+
+.cool-picture {
+    background-image: url('/static/recommendation_system/Images/backgroundImage.jpg');
+    height: 50vh;
+    background-attachment: fixed;
+    background-size: cover;
+
+    display: flex;
+    justify-content: center;
+}

@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         path = "https://archive-api.open-meteo.com/v1/archive"
-        for city in City.objects.all():
+        for city in City.objects.filter(population__gte = 100000):
             if WeatherData.objects.filter(city=city).exists():
                 self.stdout.write(f"{city.name} already exists")
                 continue
