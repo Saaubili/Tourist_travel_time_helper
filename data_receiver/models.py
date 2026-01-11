@@ -11,7 +11,6 @@ class City(models.Model):
     city_size = models.CharField(max_length=15, )
     city_type = models.CharField(max_length=25, blank=True)
     name_ru = models.CharField(max_length=100, null=True)
-    country_ru = models.CharField(max_length=100, null=True)
 
     class Meta:
         db_table = 'city'

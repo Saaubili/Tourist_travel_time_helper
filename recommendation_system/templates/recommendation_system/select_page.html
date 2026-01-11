@@ -4,24 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Tourist Travel Helper</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
     <link rel="stylesheet" href="{% static 'recommendation_system/css/city_search.css' %}">
 </head>
 <body>
-    <section class="cool-picture">
-        <h1>Tourist Travel Helper</h1>
-        <p>Выберите город и узнайте лучшее время для поездки!</p>
-    </section>
-    <h1>Выберите город</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="text" id="city-input" placeholder="Начните вводить город">
-        <input type="hidden" name="city_id" id="city-id">
-        <div id="city-results-div">
-            <ul id="city-results"></ul>
-        </div>
-    </form>
-    <div class="city_info"></div>
-    <script src="{% static 'recommendation_system/js/city_auto_search.js' %}"></script>
+<section class="cool-picture d-flex align-items-center justify-content-center">
+    <div class="text-center bg-light bg-opacity-75 p-5 rounded shadow">
+        <h1 class="fw-bold mb-4">Tourist Travel Helper</h1>
+        <h5>Выберите город и узнайте лучшее время для поездки</h5>
+    </div>
+</section>
+
+<form method="post" id="city-search-form">
+    <h2 class="text-center mb-4">Выберите город</h2>
+    {% csrf_token %}
+    <input type="text" id="city-input" class="text-center" placeholder="Начните вводить город">
+    <input type="hidden" id="city-id" name="city">
+    <div id="city-results-div">
+        <ul id="city-results"></ul>
+    </div>
+</form>
+
+<div id="selected-city-info"
+     class="mt-4 mb-5 d-flex align-items-center justify-content-center {% if not selected_city %}d-none{% endif %}">
+    <h4 id="selected-city-name">
+        {% if selected_city %}Вы выбрали город: {{ selected_city.name_ru }}{% endif %}
+    </h4>
+</div>
+
+
+<div class="ratio ratio-16x9">
+    <iframe id="map-frame"
+            src="https://www.google.com/maps?q={% if selected_city %}{{ selected_city.latitude }},{{ selected_city.longitude }}{% else %}49.96,36.25{% endif %}&z=10&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+</div>
+
+
+<script src="{% static 'recommendation_system/js/city_auto_search.js' %}"></script>
 </body>
 </html>

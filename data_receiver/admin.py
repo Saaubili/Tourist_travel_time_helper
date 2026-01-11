@@ -4,8 +4,8 @@ import _sqlite3
 
 # Register your models here.
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("name", "name_ru", "country","country_ru", "city_type", "population")
-    search_fields = ("name", "country", "name_ru", "country_ru")
+    list_display = ("name", "name_ru", "country", "city_size", "population")
+    search_fields = ("name", "country", "name_ru",)
 
 
 class WeatherDataAdmin(admin.ModelAdmin):
