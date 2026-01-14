@@ -10,35 +10,60 @@
 </head>
 <body>
 <section class="cool-picture d-flex align-items-center justify-content-center">
-    <div class="text-center bg-light bg-opacity-75 p-5 rounded shadow">
+    <div class="text-center p-5 rounded shadow" id="cool-picture-text">
         <h1 class="fw-bold mb-4">Tourist Travel Helper</h1>
         <h5>Выберите город и узнайте лучшее время для поездки</h5>
     </div>
 </section>
 
 <form method="post" id="city-search-form">
-    <h2 class="text-center mb-4">Выберите город</h2>
-    {% csrf_token %}
-    <input type="text" id="city-input" class="text-center" placeholder="Начните вводить город">
-    <input type="hidden" id="city-id" name="city">
-    <div id="city-results-div">
-        <ul id="city-results"></ul>
+    <div class="d-flex flex-row align-items-center justify-content-between" id="analytics-configuration-div">
+        <div id="analytics-configuration-city-search" class="p-5">
+            <h2 class="text-center mb-4">Выберите город</h2>
+            {% csrf_token %}
+            <input type="text" id="city-input" class="text-center" placeholder="Начните вводить город"
+                   autocomplete="off">
+            <div id="city-results-div">
+                <ul id="city-results"></ul>
+            </div>
+
+            <div id="selected-city-info" class="text-center mt-5 {% if not selected_city %}d-none{% endif %}">
+                <h4 id="selected-city-name">
+                    Вы выбрали город: {{ selected_city.name_ru }}
+                </h4>
+            </div>
+        </div>
+
+        <div id="form-hint-div"></div>
+
+        <div id="chose-analytics-type">
+            <h2 class="text-center mb-4">Выберите режим:</h2>
+            <div id="analytics-configuration-radio-btn" class="d-flex gap-5">
+                <label class="radio-btn-label">
+                    <input type="radio" id="analytics-best-periods" name="analytics-option" value="best_periods">
+                    <div class="radio-btn-option-content">
+                        <h4>Вывести лучшие даты</h4>
+                        <p>Подберём оптимальные периоды для поездки</p>
+                    </div>
+                </label>
+
+                <label class="radio-btn-label">
+                    <input type="radio" id="analytics-check-period" name="analytics-option" value="check_period">
+                    <div class="radio-btn-option-content">
+                        <h4>Проверить свою дату</h4>
+                        <p>Проверим выбранный период поездки</p>
+                    </div>
+                </label>
+            </div>
+        </div>
     </div>
 </form>
 
-<div id="selected-city-info"
-     class="mt-4 mb-5 d-flex align-items-center justify-content-center {% if not selected_city %}d-none{% endif %}">
-    <h4 id="selected-city-name">
-        {% if selected_city %}Вы выбрали город: {{ selected_city.name_ru }}{% endif %}
-    </h4>
-</div>
 
-
-<div class="ratio ratio-16x9">
+<div class="ratio ratio-16x9 mt-5 map-div">
     <iframe id="map-frame"
-            src="https://www.google.com/maps?q={% if selected_city %}{{ selected_city.latitude }},{{ selected_city.longitude }}{% else %}49.96,36.25{% endif %}&z=10&output=embed"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
+            src="https://www.google.com/maps?q={% if selected_city %}{{ selected_city.latitude }},{{ selected_city.longitude }}{% else %}56.8519,60.6122{% endif %}&z=10&output=embed"
+            loading="lazy">
     </iframe>
 </div>
 

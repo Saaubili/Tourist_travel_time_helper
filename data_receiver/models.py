@@ -20,7 +20,6 @@ class City(models.Model):
 
 class WeatherData(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, )
-    year = models.IntegerField()
     period = models.IntegerField()
     min_temperature = models.FloatField()
     max_temperature = models.FloatField()
@@ -28,8 +27,11 @@ class WeatherData(models.Model):
     wind_speed = models.FloatField()
 
     class Meta:
-        unique_together = ('city', 'year', 'period')
+        unique_together = ('city', 'period')
         db_table = 'weather_data'
+        indexes = [
+            models.Index(fields=['city', 'period']),
+        ]
 
     def get_avg_temperature(self):
         return (self.min_temperature + self.max_temperature) / 2

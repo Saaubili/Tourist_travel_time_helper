@@ -1,5 +1,4 @@
 body {
-    margin: 0px;
     background-color: rgb(236, 236, 236);
 }
 
@@ -15,21 +14,39 @@ body {
 .cool-picture::before {
     content: "";
     position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
-form {
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 40px;
+
+#cool-picture-text {
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+#city-search-form {
+    max-width: 80vw;
+    margin: 40px auto;
     border-radius: 16px;
+}
+
+#analytics-configuration-city-search{
+    width: 50%;
+}
+
+#analytics-configuration-div{
+    gap: 20px
 }
 
 #city-input {
     width: 100%;
     padding: 14px 16px;
-    font-size: 1rem;
     border-radius: 10px;
     border: 1px solid rgb(209, 213, 219);
 }
@@ -63,4 +80,49 @@ form {
 
 .selected-city-info {
     max-width: 800px;
+    background-color: white;
+}
+
+#map-frame{
+    margin-top: 30vh
+}
+
+.map-div{
+    margin-left: 8px
+}
+
+.radio-btn-label {
+    cursor: pointer;
+}
+
+.radio-btn-label input {
+    display: none;
+}
+
+.radio-btn-option-content{
+    padding: 15px;
+    border-radius: 12px;
+    background-color: rgb(255, 255, 255);
+    border: 2px solid white;
+}
+
+.radio-btn-option-content p {
+    margin: 0;
+    font-size: 18px;
+    color: rgb(107, 114, 128);
+}
+
+.radio-btn-option-content h4 {
+    font-size: 20px;
+}
+
+
+.radio-btn-label:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.radio-btn-label input:checked + .radio-btn-option-content {
+    border-color: rgb(37, 99, 235);
+    background-color: rgb(240, 246, 255);
 }

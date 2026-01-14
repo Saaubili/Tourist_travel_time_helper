@@ -60,7 +60,7 @@ class Command(BaseCommand):
 
             for _, row in grouped.iterrows():
                 WeatherData.objects.update_or_create(
-                    city=city,
+                    city=city.name,
                     year=int(row["year"]),
                     period=int(row["period"]),
                     defaults={

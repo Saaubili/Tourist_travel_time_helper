@@ -12,14 +12,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         viable_countries_iso3 = [
-            "ALB", "AND", "AUT", "BLR", "BEL", "BIH", "BGR", "HRV", "CYP",
-            "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "ISL",
-            "IRL", "ITA", "LVA", "LIE", "LTU", "LUX", "MLT", "MDA", "MCO",
-            "MNE", "NLD", "MKD", "NOR", "POL", "PRT", "ROU", "RUS", "SMR",
-            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "VAT", ]
+
+            "XKS", "TUR" ]
         with open(options['csv_file'], encoding='utf-8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
+                self.stdout.write(f"{row['city']}")
                 if row["iso3"] in viable_countries_iso3:
                     city_name = row['city']
                     population = int(row["population"])
