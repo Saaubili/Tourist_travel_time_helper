@@ -60,10 +60,9 @@ class Command(BaseCommand):
             if country_iso_2 in iso2_country_name_dict:
                 for date in rate_data_df.columns:
                     year, month = map(int, date.split("-"))
-                    parsed_date = datetime.date(year, month, 1)
                     rate = self.clean_value(row[date])
                     night = self.clean_value(row.get(f"{date}_n"))
-                    TourismStat.objects.update_or_create(country= iso2_country_name_dict.get(country_iso_2), date=parsed_date, defaults={
+                    TourismStat.objects.update_or_create(country= iso2_country_name_dict.get(country_iso_2), month=month, defaults={
                         "nights_spent": night,
                         "occupancy_rate": rate,
                     })
