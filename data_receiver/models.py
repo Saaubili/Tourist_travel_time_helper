@@ -8,7 +8,7 @@ class City(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     population = models.IntegerField()
-    city_size = models.CharField(max_length=15, )
+    city_size = models.CharField(max_length=15)
     city_type = models.CharField(max_length=25, blank=True)
     name_ru = models.CharField(max_length=100, null=True)
 
@@ -19,12 +19,20 @@ class City(models.Model):
         return self.name_ru if self.name_ru else self.name
 
 class WeatherData(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE, )
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
     period = models.IntegerField()
-    min_temperature = models.FloatField()
+
+    mean_temperature = models.FloatField()
     max_temperature = models.FloatField()
+
     precipitation = models.FloatField()
+
     wind_speed = models.FloatField()
+
+    min_relative_humidity = models.IntegerField()
+    mean_relative_humidity = models.IntegerField()
+
+    daylight_duration = models.FloatField()
 
     class Meta:
         unique_together = ('city', 'period')
@@ -33,16 +41,13 @@ class WeatherData(models.Model):
             models.Index(fields=['city', 'period']),
         ]
 
-    def get_avg_temperature(self):
-        return (self.min_temperature + self.max_temperature) / 2
-
 
 class TourismStat(models.Model):
     country = models.CharField(max_length=100)
-    date = models.DateField()
+    month = models.IntegerField(null=True)
     nights_spent = models.IntegerField(null=True)
     occupancy_rate = models.FloatField(null=True)
 
     class Meta:
-        unique_together = ("country", "date")
+        unique_together = ("country", "month")
         db_table = 'tourism_stat'

@@ -48,20 +48,23 @@ class Command(BaseCommand):
 
             df["period"] = df["day_index"] // 14 + 1
 
-            grouped = df.groupby(["year", "period"]).agg(
+            weekly_by_year = df.groupby(["year", "period"]).agg(
                 min_temperature=("min_temp", "mean"),
                 max_temperature=("max_temp", "mean"),
                 precipitation=("precipitation", "sum"),
                 wind_speed=("wind_speed", "mean"),
+            )
+
+            weekly_avg = weekly_by_year.groupby("period").agg(
+                min_temperature=("min_temperature", "mean"),
+                max_temperature=("max_temperature", "mean"),
+                precipitation=("precipitation", "mean"),
+                wind_speed=("wind_speed", "mean"),
             ).reset_index()
 
-            grouped["year"] = grouped["year"].astype(int)
-            grouped["period"] = grouped["period"].astype(int)
-
-            for _, row in grouped.iterrows():
+            for _, row in weekly_avg.iterrows():
                 WeatherData.objects.update_or_create(
-                    city=city.name,
-                    year=int(row["year"]),
+                    city=city,
                     period=int(row["period"]),
                     defaults={
                         "min_temperature": row["min_temperature"],

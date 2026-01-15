@@ -9,12 +9,12 @@ class CityAdmin(admin.ModelAdmin):
 
 
 class WeatherDataAdmin(admin.ModelAdmin):
-    list_display = ("city", "year", "period", "min_temperature", "max_temperature")
-    search_fields = ("city", "year", "period")
+    list_display = ("city", "period", "max_temperature")
+    search_fields = ("city", "period")
 
 
 class TourismStatAdmin(admin.ModelAdmin):
-    list_display = ("country", "date", "nights_spent", "occupancy_rate")
+    list_display = ("country", "month", "nights_spent", "occupancy_rate")
     search_fields = ("country",)
 
 
