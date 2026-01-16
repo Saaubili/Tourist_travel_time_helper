@@ -6,7 +6,10 @@
     <title>Tourist Travel Helper</title>
     {% load django_bootstrap5 %}
     {% bootstrap_css %}
-    <link rel="stylesheet" href="{% static 'recommendation_system/css/city_search.css' %}">
+    <link rel="stylesheet" href="{% static 'recommendation_system/css/city_search_analytics_form.css' %}">
+    <link rel="stylesheet" href="{% static 'recommendation_system/css/picture_background_and_map.css' %}">
+    <link rel="stylesheet" href="{% static 'recommendation_system/css/radio_btns_and_hints.css' %}">
+    <link rel="stylesheet" href="{% static 'recommendation_system/css/top_weeks_and_plot.css' %}">
 </head>
 <body>
 <section class="cool-picture d-flex align-items-center justify-content-center">
@@ -59,11 +62,13 @@
     </div>
 </form>
 
-<div id="results-div" class="mt-5">
-    <h3>Топ 5 лучших недель</h3>
-    <ul id="top-weeks-list"></ul>
+<div id="weeks-info-div" class="d-none">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <h3 class="text-center">Топ 5 лучших недель</h3>
+        <ul id="top-weeks-list"></ul>
+    </div>
 
-    <h3 class="mt-4">График всех недель</h3>
+    <h3>График всех недель</h3>
     <div id="weekly-scores-plot" style="width:100%;height:400px;"></div>
 </div>
 
@@ -76,7 +81,7 @@
 </div>
 
 
-<script src="{% static 'recommendation_system/js/city_auto_search.js' %}"></script>
+<script type="module" src="{% static 'recommendation_system/js/city_and_radio_btn.js' %}"></script>
 <script src="https://cdn.plot.ly/plotly-3.3.1.min.js"></script>
 </body>
 </html>

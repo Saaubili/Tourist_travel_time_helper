@@ -65,7 +65,6 @@ def prepare_best_periods(request, city_selected):
     weather_result = weather_result.order_by("period")
     weekly_scores = []
 
-    city_comfort_coef = calculate_population_coef(city)
     last_month = 0
     tourism_coef = 0
     for week in weather_result:
@@ -75,21 +74,39 @@ def prepare_best_periods(request, city_selected):
             if month != last_month:
                 tourism_coef = calculate_tourism_coef(tourism_stat, month)
                 last_month = month
-        week_score = TCI * 0.6 + tourism_coef * 0.2 + city_comfort_coef * 0.2
-        weekly_scores.append({"period": week.period, "score_raw": week_score})
+        else:
+            tourism_coef = get_tourism_coef_by_city_size(city.city_size, climate_type)
+        week_score = round(TCI * 0.78 + tourism_coef * 0.22,2)
+        if week_score > 5:
+            week_score = 5
+        weekly_scores.append({"period": week.period, "score": week_score})
 
     df = pd.DataFrame(weekly_scores)
-    min_score = df["score_raw"].min()
-    max_score = df["score_raw"].max()
-
-    if max_score > min_score:
-        df["score"] = round(((df["score_raw"] - min_score) /(max_score - min_score)) * 5, 2)
-
-    df["score"] = df["score"].clip(0, 5)
     best_weeks = df.sort_values("score", ascending=False).head(5)
 
     return {"df": df, "best_weeks": best_weeks}
 
+
+def get_tourism_coef_by_city_size(city_size, climate_type):
+    if city_size == "very big":
+        if climate_type in ["temperate", "cool"]:
+            return 1
+        return 0.2
+    elif city_size == "big":
+        if climate_type in ["temperate", "cool"]:
+            return 1.5
+        return 0.5
+    elif city_size == "large":
+        if climate_type in ["temperate", "cool"]:
+            return 2
+        return 0.7
+    elif city_size == "average":
+        if climate_type in ["temperate", "cool"]:
+            return 3
+        return 1
+    if climate_type in ["temperate", "cool"]:
+        return 3
+    return 1.2
 
 def get_climate_type_by_lat(lat):
     lat = abs(lat)
@@ -125,18 +142,6 @@ def get_occup_rate_score(occupancy_rate):
     return 1
 
 
-def calculate_population_coef(city_size):
-    if city_size == "small":
-        return 5
-    elif city_size == "average":
-        return 4
-    elif city_size == "large":
-        return 3
-    elif city_size == "big":
-        return 2
-    return 1
-
-
 def calculate_TCI(weekly_data, climate_type):
     CID = get_CID_CIA_score(weekly_data.max_temperature, weekly_data.min_relative_humidity, climate_type)
     CIA = get_CID_CIA_score(weekly_data.mean_temperature, weekly_data.mean_relative_humidity, climate_type)
@@ -156,8 +161,8 @@ def get_TCI_coef(climate_type):
     if climate_type == "warm":
         return 1
     elif climate_type == "temperate":
-        return 1.05
-    return 1.1
+        return 1.1
+    return 1.2
 
 
 def calculate_rainfall_score(precipitation):
@@ -351,9 +356,6 @@ def city_selected(request):
     city = get_object_or_404(City, id=city_id)
     return JsonResponse({
         "name": city.name_ru,
-        "population": city.population,
-        "lat": city.latitude,
-        "lon": city.longitude,
     })
 
 
@@ -370,8 +372,6 @@ def city_search(request):
         {
             "id": city.id,
             "name": city.name_ru,
-            "lat": city.latitude,
-            "lon": city.longitude,
         }
         for city in cities
     ]
