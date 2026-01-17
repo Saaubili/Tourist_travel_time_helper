@@ -1,5 +1,6 @@
 .radio-btn-label {
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .radio-btn-label:hover {
@@ -7,7 +8,7 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
-.radio-btn-label input {
+.radio-btn-label input[type="radio"] {
     display: none;
 }
 
@@ -24,10 +25,12 @@
 }
 
 .radio-btn-option-content h4 {
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
 }
 
-.radio-btn-option-content p {
+.radio-btn-option-content-text {
     margin: 0;
     font-size: 18px;
     color: rgb(107, 114, 128);
@@ -37,4 +40,26 @@
     text-align: center;
     font-size: 20px;
     margin-top: 40px;
+}
+
+.period-error{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    color: red;
+    margin-top: 12px;
+}
+
+#analyze-period-btn{
+    border: 1px solid rgb(73, 73, 73);
+    background-color: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+}
+
+.period-input {
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: 2px solid rgb(229, 231, 235);
 }

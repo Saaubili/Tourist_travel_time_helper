@@ -4,6 +4,8 @@ import { getWeekDaysFromPeriod } from "./utils.js"
 import { determineColorByScore } from "./utils.js"
 
 export function createBarPlot(analyticsData) {
+    const plotDiv = document.querySelector("#plot-div")
+    plotDiv.classList.remove("d-none")
     let periods = []
     let scores = []
     let colors = []

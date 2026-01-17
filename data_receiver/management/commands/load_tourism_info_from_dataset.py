@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 from data_receiver.models import TourismStat
 import pandas as pd
-import datetime
 
 
 class Command(BaseCommand):
@@ -9,7 +8,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("occupancy_file", type=str)
-        parser.add_argument("night_file", type=str)
 
     def handle(self, *args, **options):
         iso2_country_name_dict = {
@@ -51,28 +49,29 @@ class Command(BaseCommand):
             "XK": "Kosovo",
         }
 
-        rate_data_df = self.fix_df_index(pd.read_csv(options["occupancy_file"], sep="\t", encoding="utf-8", index_col=0))
-        night_data_df = self.fix_df_index(pd.read_csv(options["night_file"], sep="\t", encoding="utf-8", index_col=0))
+        rate_data_df = self.fix_df_index(pd.read_csv(options["occupancy_file"],sep="\t",encoding="utf-8",index_col=0,))
 
-        joined_df = rate_data_df.join(night_data_df, how="left", rsuffix="_n")
-
-        for country_iso_2, row in joined_df.iterrows():
+        for country_iso_2, row in rate_data_df.iterrows():
             if country_iso_2 in iso2_country_name_dict:
                 for date in rate_data_df.columns:
-                    year, month = map(int, date.split("-"))
+                    month = map(int, date.split("-")[1])
                     rate = self.clean_value(row[date])
-                    night = self.clean_value(row.get(f"{date}_n"))
-                    TourismStat.objects.update_or_create(country= iso2_country_name_dict.get(country_iso_2), month=month, defaults={
-                        "nights_spent": night,
-                        "occupancy_rate": rate,
-                    })
+
+                    TourismStat.objects.update_or_create(
+                        country=iso2_country_name_dict.get(country_iso_2),
+                        month=month,
+                        defaults={
+                            "occupancy_rate": rate,
+                        },
+                    )
+
         self.stdout.write(self.style.SUCCESS("data loaded successfully"))
 
     @staticmethod
     def clean_value(value):
-        if pd.isna(value) or value.strip() == ':':
+        if pd.isna(value) or str(value).strip() == ":":
             return None
-        return float(str(value).replace("e","").replace("u",""))
+        return float(str(value).replace("e", "").replace("u", ""))
 
     @staticmethod
     def fix_df_index(df):

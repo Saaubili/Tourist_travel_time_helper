@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from data_receiver.models import City
 import csv
 import requests
+import re
 
 
 class Command(BaseCommand):
@@ -11,83 +12,55 @@ class Command(BaseCommand):
         parser.add_argument("csv_file", type=str)
 
     def handle(self, *args, **options):
-        viable_countries_iso3 = [
-            "ALB", "AND", "AUT", "BLR", "BEL", "BIH", "BGR", "HRV", "CYP",
-            "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC", "HUN", "ISL",
-            "IRL", "ITA", "XKS", "LVA", "LIE", "LTU", "LUX", "MLT", "MDA",
-            "MCO", "MNE", "NLD", "MKD", "NOR", "POL", "PRT", "ROU", "RUS",
-            "SRB", "SVK", "SVN", "ESP", "SWE", "CHE", "UKR", "GBR", "TUR"
-        ]
-
         with open(options['csv_file'], encoding='utf-8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
-                self.stdout.write(f"{row['city']}")
-                if row["iso3"] in viable_countries_iso3:
-                    city_name = row['city']
-                    population = int(row["population"])
-                    csv_city_type = row['capital']
-                    is_capital = csv_city_type.strip() == "primary"
 
-                    rus_name, tourism_info = self.check_if_city_tourist(city_name)
+                if int(row["population"]) > 30000:
+                    lag = float(row['lat'])
+                    lng = float(row['lng'])
+                    population = int(row["population"])
+
+                    rus_name = self.get_russian_name(lag, lng)
 
                     city_size = self.determine_city_size(population)
-
-                    city_type = self.determine_city_type(is_capital, tourism_info)
 
                     City.objects.update_or_create(name=row['city'],
                                                   country=row['country'],
                                                   defaults={
-                                                      "latitude": float(row["lat"]),
-                                                      "longitude": float(row["lng"]),
+                                                      "latitude": lag,
+                                                      "longitude": lng,
                                                       "population": population,
                                                       "city_size": city_size,
-                                                      "city_type": city_type,
                                                       "name_ru": rus_name,
                                                   })
+                    self.stdout.write(self.style.SUCCESS(f"Successfully loaded city {rus_name}"))
         self.stdout.write(self.style.SUCCESS("Successfully loaded cities data"))
 
-    def check_if_city_tourist(self, city_name):
-        params = {"q": city_name, "language": "ru", "limit": 1}
-
-        headers = {
-            "User-Agent": "Test-script",
+    @staticmethod
+    def get_russian_name(lat, lng):
+        contains_russian = lambda text: bool(re.search(r'[а-яА-ЯёЁ]', text))
+        historical_data_url = "http://api.geonames.org/findNearbyPlaceNameJSON"
+        params = {
+            "lat": lat,
+            "lng": lng,
+            "username": "sarik",
+            "cities": "cities15000",
+            "radius": 300,
+            "featureClass": "P",
+            "lang": "ru",
         }
-        tourism_dict = {
-            "Q1200957": "Generally popular location",
-            "Q130003": "Ski resort",
-            "Q317548": "Resort town",
-            "Q1021711": "Seaside resort"
-        }
-        try:
-            item_search_url = "https://www.wikidata.org/w/rest.php/wikibase/v0/search/items"
-            item_search_result = requests.get(item_search_url, params=params, headers=headers)
-
-            if not item_search_result.json()["results"]:
-                self.stdout.write(self.style.WARNING(f"No Wikidata entry found for city '{city_name}'"))
-                return None, []
-
-            id = item_search_result.json()["results"][0]["id"]
-            rus_name = item_search_result.json()["results"][0]["display-label"]["value"]
-
-            statements_search_url = f"https://www.wikidata.org/w/rest.php/wikibase/v1/entities/items/{id}/statements"
-
-            statements_search_result = requests.get(statements_search_url, headers=headers)
-            statements_by_parameter = statements_search_result.json().get("P31", [])
-            if statements_by_parameter:
-                statements_list = []
-
-                for statement in statements_by_parameter:
-                    statement_id = statement["value"]["content"]
-                    if statement_id in tourism_dict:
-                        statements_list.append(tourism_dict.get(statement["value"]["content"]))
-                return (rus_name,statements_list)
-            else:
-                self.stdout.write(self.style.WARNING(f"No 'Instance of' data for city '{city_name}'"))
-                return None, []
-        except requests.exceptions.RequestException:
-            self.stdout.write(self.style.ERROR("Failed to connect to Wikidata API"))
-            return None, []
+        response = requests.get(historical_data_url, params=params).json()['geonames']
+        candidates = []
+        for place in response:
+            name = place['name']
+            if contains_russian(name):
+                candidates.append({"name": name, "population": int(place['population'])})
+        candidates.sort(key=lambda x: x["population"], reverse=True)
+        best = candidates[0]
+        if contains_russian(best["name"]):
+            return best["name"]
+        return "Не смог найти русское название"
 
     @staticmethod
     def determine_city_size(population):
@@ -102,15 +75,3 @@ class Command(BaseCommand):
         else:
             city_size = "small"
         return city_size
-
-    @staticmethod
-    def determine_city_type(is_capital, tourism_info):
-        if is_capital:
-            return "capital"
-        if tourism_info:
-            if "Generally popular location" in tourism_info:
-                city_type = "tourist attraction"
-            else:
-                city_type = tourism_info[0]
-            return city_type
-        return ""

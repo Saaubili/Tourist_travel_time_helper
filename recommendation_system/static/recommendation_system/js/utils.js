@@ -58,15 +58,40 @@ export function shouldShowHint() {
     }
 }
 
-export function determineColorByScore(alpha, score){
-    if (score >= 4.3)
-            return `rgba(16, 233, 9, ${alpha})`
-        else if (score >= 3.7)
-            return `rgba(167, 233, 14, ${alpha})`
-        else if (score >= 2.8)
-            return `rgba(221, 236, 12, ${alpha})`
-        else if (score > 1.8)
-            return `rgba(233, 138, 14, ${alpha})`
-        else
-            return `rgba(236, 25, 10, ${alpha})`
+export function determineColorByScore(alpha, score) {
+    if (score >= 4.5)
+        return `rgba(40, 240, 13, ${alpha})`
+    else if (score >= 4.3)
+        return `rgba(16, 233, 9, ${alpha})`
+    else if (score >= 3.7)
+        return `rgba(167, 233, 14, ${alpha})`
+    else if (score >= 2.8)
+        return `rgba(221, 236, 12, ${alpha})`
+    else if (score > 1.8)
+        return `rgba(233, 138, 14, ${alpha})`
+    else
+        return `rgba(236, 25, 10, ${alpha})`
+}
+
+function getWeekNumber(date) {
+    let currentDate = new Date(date)
+    const dayNum = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
+    currentDate.setDate(currentDate.getDate() + 4 - dayNum)
+    const yearStart = new Date(currentDate.getFullYear(), 0, 1)
+    return Math.ceil((((currentDate - yearStart) / 86400000) + 1) / 7)
+}
+
+export function getWeeksFromRange(startDate, endDate) {
+    const daysDiff = (endDate - startDate) / 86400000;
+    if (daysDiff > 32) {
+        return "Too far ahead"
+    }
+    const weeks = new Set();
+
+    let current = new Date(startDate);
+    while (current <= endDate) {
+        weeks.add(getWeekNumber(current));
+        current.setDate(current.getDate() + 1);
+    }
+    return Array.from(weeks);
 }

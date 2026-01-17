@@ -9,7 +9,6 @@ class City(models.Model):
     longitude = models.FloatField()
     population = models.IntegerField()
     city_size = models.CharField(max_length=15)
-    city_type = models.CharField(max_length=25, blank=True)
     name_ru = models.CharField(max_length=100, null=True)
 
     class Meta:
@@ -45,7 +44,6 @@ class WeatherData(models.Model):
 class TourismStat(models.Model):
     country = models.CharField(max_length=100)
     month = models.IntegerField(null=True)
-    nights_spent = models.IntegerField(null=True)
     occupancy_rate = models.FloatField(null=True)
 
     class Meta:

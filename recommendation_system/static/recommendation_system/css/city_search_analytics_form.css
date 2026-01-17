@@ -11,6 +11,10 @@ body {
     background-color: rgb(241, 245, 249);
 }
 
+#analytics-configuration-radio-btn{
+    align-items: flex-start;
+}
+
 #analytics-configuration-city-search {
     width: 50%;
 }

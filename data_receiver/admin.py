@@ -5,7 +5,7 @@ import _sqlite3
 # Register your models here.
 class CityAdmin(admin.ModelAdmin):
     list_display = ("name", "name_ru", "country", "city_size", "population")
-    search_fields = ("name", "country", "name_ru",)
+    search_fields = ("name", "country", "name_ru", "id")
 
 
 class WeatherDataAdmin(admin.ModelAdmin):
@@ -14,7 +14,7 @@ class WeatherDataAdmin(admin.ModelAdmin):
 
 
 class TourismStatAdmin(admin.ModelAdmin):
-    list_display = ("country", "month", "nights_spent", "occupancy_rate")
+    list_display = ("country", "month", "occupancy_rate")
     search_fields = ("country",)
 
 

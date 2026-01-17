@@ -1,0 +1,29 @@
+#top-weeks-list {
+    max-width: 900px;
+    padding: 0;
+    list-style: none;
+}
+
+.top-weeks-list-item {
+    border-radius: 20px;
+    margin: 14px 18px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.top-weeks-list-item:hover {
+    border: 2px solid rgba(0, 162, 255, 0.9);
+}
+
+#weekly-scores-plot{
+    width:100%;
+    height:400px;
+}
+
+#chosen-periods-score{
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 8px;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
