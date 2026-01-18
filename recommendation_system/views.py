@@ -14,7 +14,7 @@ def main_page(request):
         "selected_city": selected_city_id,
         "analytics_type": chosen_analytics_type,
     }
-    return render(request, "recommendation_system/select_page.html", context)
+    return render(request, "recommendation_system/main page.html", context)
 
 
 def check_if_ready_to_analyze(request):

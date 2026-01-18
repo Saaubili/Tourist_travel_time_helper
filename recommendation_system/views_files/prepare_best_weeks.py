@@ -31,7 +31,7 @@ def rate_every_week(city_id):
         if week_score > 5:
             week_score = 5
         weekly_scores.append({"period": week.period, "score": week_score})
-    return weekly_scores
+    return weekly_scores[:-1]
 
 
 def prepare_best_periods(city_id):

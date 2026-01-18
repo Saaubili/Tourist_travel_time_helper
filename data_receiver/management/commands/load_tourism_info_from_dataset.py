@@ -54,7 +54,7 @@ class Command(BaseCommand):
         for country_iso_2, row in rate_data_df.iterrows():
             if country_iso_2 in iso2_country_name_dict:
                 for date in rate_data_df.columns:
-                    month = map(int, date.split("-")[1])
+                    month = int(date.split("-")[1].strip())
                     rate = self.clean_value(row[date])
 
                     TourismStat.objects.update_or_create(

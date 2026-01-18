@@ -1,11 +1,30 @@
 import { createBarPlot } from "./create_plot.js"
 import { getWeekDaysFromPeriod } from "./utils.js"
 import { determineColorByScore } from "./utils.js"
+import { createErrorMessage } from "./radio_inputs.js"
 
 const weeksInfoDiv = document.querySelector("#weeks-info-div")
 const chosenPeriodsDiv = document.querySelector('#chosen-periods-div');
 
+function arePeriodsChosen(){
+    const selectedRadio = localStorage.getItem("selectedRadio");
+    const startDate = localStorage.getItem("startDate");
+    const endDate = localStorage.getItem("endDate");
+    const isCitySelected = localStorage.getItem("isCitySelected")
+    if (selectedRadio === "check_period" && (!startDate || !endDate) && isCitySelected) {
+        const periodErrorDiv = document.querySelector('#period-error-div');
+        periodErrorDiv.innerHTML = "";
+        createErrorMessage("Пожалуйста, укажите период для анализа", periodErrorDiv)
+        return false
+    }
+    return true
+}
+
+
 export function checkIfReadyToAnalyze() {
+    if (!arePeriodsChosen())
+        return
+
     fetch("/check_if_ready_to_analyze/")
         .then(response => response.json())
         .then(data => {

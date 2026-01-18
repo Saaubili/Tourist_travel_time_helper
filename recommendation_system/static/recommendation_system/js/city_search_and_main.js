@@ -71,17 +71,17 @@ function check_if_all_already_selected() {
 
         const selected_btn_at_start = document.querySelector(`input[name="analytics-option"][value="${selectedRadio_storage}"]`)
 
-        if (selected_btn_at_start)
-            selected_btn_at_start.checked = true
+       if (selected_btn_at_start) {
+            selected_btn_at_start.click();
+        }
+
+        if (startDate && endDate) {
+            startDateInput.value = startDate;
+            endDateInput.value = endDate;
+        }
 
         if (isCitySelected && selected_btn_at_start) {
-            if (startDate && endDate) {
-                startDateInput.value = startDate
-                endDateInput.value = endDate
-                const dateInput = document.querySelector('#period-input-div');
-                dateInput.classList.remove("d-none")
-            }
-            checkIfReadyToAnalyze()
+            checkIfReadyToAnalyze();
         }
     })
 }

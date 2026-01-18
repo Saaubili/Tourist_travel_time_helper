@@ -56,6 +56,10 @@
     border-radius: 20px;
     padding: 12px 20px;
 }
+#analyze-period-btn:hover {
+    transform: translateY(-4px);
+    border-color: aqua;
+}
 
 .period-input {
     padding: 10px 14px;

@@ -11,21 +11,26 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bdf&8sfw48ynuk2%0d&*0c7t%^mz&&k)6jju66_&bwe^4*spz$'
+SECRET_KEY = env("SECRET_KEY", default="unsafe-secret-key")
+print("GEONAMES_USERNAME from environ:", env("GEONAMES_USERNAME", default="MISSING"))
+
+GEONAMES_USERNAME = env("GEONAMES_USERNAME")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['yourusername.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['Saaubili.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition

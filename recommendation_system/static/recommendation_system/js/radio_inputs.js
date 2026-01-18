@@ -21,7 +21,7 @@ function addRadioButtonsEventListener(btn) {
     }).then(() => checkIfReadyToAnalyze())
 }
 
-function createErrorMessage(text, periodErrorDiv) {
+export function createErrorMessage(text, periodErrorDiv) {
     const periodError = document.createElement("p")
     periodError.textContent = `${text}`
     periodError.className = "period-error"
@@ -45,7 +45,7 @@ export function setRadioInputsEvents() {
         dateInput.classList.remove("d-none")
     })
 
-    analyzePeriodBtn.addEventListener("click", (e) => {
+    analyzePeriodBtn.addEventListener("click", () => {
         periodErrorDiv.innerHTML = ""
 
         const startDate = document.querySelector('#period-input-start')
@@ -57,7 +57,7 @@ export function setRadioInputsEvents() {
             createErrorMessage("Периоды не выбраны!", periodErrorDiv)
             return
         }
-        if (startDate.value > endDate.value){
+        if (startDate.value > endDate.value) {
             createErrorMessage("Конечная дата должна быть не раньше начальной!", periodErrorDiv)
             return
         }
@@ -76,5 +76,8 @@ export function setRadioInputsEvents() {
             },
             body: `chosen_periods=${periodsSet}`
         })
+            .then(() => {
+                checkPeriodBtn.click()
+            })
     })
 }
