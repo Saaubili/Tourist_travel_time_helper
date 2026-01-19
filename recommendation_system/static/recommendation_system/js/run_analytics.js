@@ -5,8 +5,9 @@ import { createErrorMessage } from "./radio_inputs.js"
 
 const weeksInfoDiv = document.querySelector("#weeks-info-div")
 const chosenPeriodsDiv = document.querySelector('#chosen-periods-div');
+const loader = document.querySelector(".loader");
 
-function arePeriodsChosen(){
+function arePeriodsChosen() {
     const selectedRadio = localStorage.getItem("selectedRadio");
     const startDate = localStorage.getItem("startDate");
     const endDate = localStorage.getItem("endDate");
@@ -24,7 +25,7 @@ function arePeriodsChosen(){
 export function checkIfReadyToAnalyze() {
     if (!arePeriodsChosen())
         return
-
+    loader.classList.remove("d-none");
     fetch("/check_if_ready_to_analyze/")
         .then(response => response.json())
         .then(data => {
@@ -62,5 +63,8 @@ export function checkIfReadyToAnalyze() {
 
                 createBarPlot(data)
             }
+        })
+        .finally(() => {
+            loader.classList.add("d-none");
         })
 }
