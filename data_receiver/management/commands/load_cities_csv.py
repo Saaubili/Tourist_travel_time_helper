@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 if City.objects.filter(latitude=lag, longitude=lng).exists():
                     self.stdout.write(f"City {row['city']} already exists")
                     continue
-                if int(row["population"]) > 30000 and row["country"] not in ["US", "China"]:
+                if int(row["population"]) > 30000:
                     population = int(row["population"])
 
                     rus_name = self.get_russian_name(lag, lng)
